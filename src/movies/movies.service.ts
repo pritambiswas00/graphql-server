@@ -2,16 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { Movie } from '@prisma/client';
 import { CreateOneMovieArgs } from '~/@generated/movie/create-one-movie.args';
 import { FindManyMovieArgs } from '~/@generated/movie/find-many-movie.args';
+import { MovieCreateInput } from '~/@generated/movie/movie-create.input';
+import { MovieUpdateInput } from '~/@generated/movie/movie-update.input';
 import { MovieWhereUniqueInput } from '~/@generated/movie/movie-where-unique.input';
 import { UpdateOneMovieArgs } from '~/@generated/movie/update-one-movie.args';
 import { DatabaseService } from '~/DataBase/database.service';
-import { MovieFilter, MovieSort } from '~/movies/movies.resolver';
 
 @Injectable()
 export class MoviesService {
     constructor(private readonly dataBaseService: DatabaseService) { }
 
-    async findAllMovies(searchQuery: FindManyMovieArgs): Promise<Movie[]> {
+    public async findAllMovies(searchQuery: FindManyMovieArgs): Promise<Movie[]> {
         try {
             const { page, limit, orderBy, where } = searchQuery;
             const skip = ( page- 1) * limit;
@@ -26,11 +27,13 @@ export class MoviesService {
         }
     }
 
-    async findMovieById(id: number): Promise<Movie> {
+    public async findMovie(query:MovieWhereUniqueInput): Promise<Movie> {
         try {
+            
             return await this.dataBaseService.movie.findUnique({
                 where: {
-                    id
+                    id: query.id,
+                    movieName: query.movieName
                 }
             })
         } catch (error) {
@@ -38,34 +41,50 @@ export class MoviesService {
         }
     }
 
-    async createMovie(movie: CreateOneMovieArgs): Promise<Movie> {
+    public async createMovie(movie: MovieCreateInput): Promise<Movie> {
           try{
-              return this.dataBaseService.movie.create({
+              const newMovie = await this.dataBaseService.movie.create({
                   data: {
-                     movieName: movie.data.movieName,
-                     description: movie.data.description,
-                     director: movie.data.director,
-                     releaseDate: movie.data.releaseDate,
+                     movieName: movie.movieName.toLowerCase(),
+                     description: movie.description,
+                     director: movie.director,
+                     releaseDate: movie.releaseDate,
                   }
-              })
+              });
+              if(newMovie) return newMovie;
+              else new Error("Movie Name already exists" );
           }catch(error) {
               console.log(error?.message, "Message")
-              throw new Error(error?.message);
+              throw error;
           }
     }
 
-    async updateMovie(data: MovieWhereUniqueInput, movie: UpdateOneMovieArgs): Promise<Movie> {
+    public async updateMovie(searchInput: MovieWhereUniqueInput, movie: MovieUpdateInput): Promise<Movie> {
         try {
             const updatedMovie = await this.dataBaseService.movie.update({
               where: {
-                id: data.id,
+                id: searchInput.id,
+                movieName: searchInput.movieName,
               },
-              data: movie.data,
+              data: movie,
             });
             return updatedMovie;
           } catch (error) {
             throw new Error('Database error occurred: ' + error.message);
           }        
+    }
+
+    public async deleteMovie(searchInput: MovieWhereUniqueInput): Promise<Movie> {
+          try{
+              return this.dataBaseService.movie.delete({
+                  where: {
+                      id: searchInput.id,
+                      movieName: searchInput.movieName
+                  }
+              })
+          }catch(error) {
+               throw new Error('Database error occurred: ' + error.message);
+          }
     }
 
 }

@@ -45,7 +45,8 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
-  movies(where: MovieWhereInput, orderBy: [MovieOrderByWithRelationInput!], cursor: MovieWhereUniqueInput, take: Int, skip: Int, distinct: [MovieScalarFieldEnum!], page: Int = 1, limit: Int = 10): [Movie!]!
+  movies(where: MovieWhereInput, orderBy: [MovieOrderByWithRelationInput!], page: Int = 1, limit: Int = 10): [Movie!]!
+  movie(query: MovieWhereUniqueInput!): Movie!
 }
 
 input MovieWhereInput {
@@ -201,16 +202,10 @@ input MovieWhereUniqueInput {
   movieName: String
 }
 
-enum MovieScalarFieldEnum {
-  id
-  movieName
-  description
-  director
-  releaseDate
-}
-
 type Mutation {
-  createMovie(data: MovieCreateInput!): Movie!
+  createMovie(movie: MovieCreateInput!): Movie!
+  updateMovie(searchInput: MovieWhereUniqueInput!, movie: MovieUpdateInput!): Movie!
+  deleteMovie(query: MovieWhereUniqueInput!): Movie!
 }
 
 input MovieCreateInput {
@@ -275,4 +270,98 @@ input ReviewCreateManyMovieInput {
   userId: Int!
   rating: Int!
   comment: String!
+}
+
+input MovieUpdateInput {
+  description: StringFieldUpdateOperationsInput
+  director: StringFieldUpdateOperationsInput
+  releaseDate: DateTimeFieldUpdateOperationsInput
+  reviews: ReviewUpdateManyWithoutMovieNestedInput
+}
+
+input StringFieldUpdateOperationsInput {
+  set: String
+}
+
+input DateTimeFieldUpdateOperationsInput {
+  set: DateTime
+}
+
+input ReviewUpdateManyWithoutMovieNestedInput {
+  create: [ReviewCreateWithoutMovieInput!]
+  connectOrCreate: [ReviewCreateOrConnectWithoutMovieInput!]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutMovieInput!]
+  createMany: ReviewCreateManyMovieInputEnvelope
+  set: [ReviewWhereUniqueInput!]
+  disconnect: [ReviewWhereUniqueInput!]
+  delete: [ReviewWhereUniqueInput!]
+  connect: [ReviewWhereUniqueInput!]
+  update: [ReviewUpdateWithWhereUniqueWithoutMovieInput!]
+  updateMany: [ReviewUpdateManyWithWhereWithoutMovieInput!]
+  deleteMany: [ReviewScalarWhereInput!]
+}
+
+input ReviewUpsertWithWhereUniqueWithoutMovieInput {
+  where: ReviewWhereUniqueInput!
+  update: ReviewUpdateWithoutMovieInput!
+  create: ReviewCreateWithoutMovieInput!
+}
+
+input ReviewUpdateWithoutMovieInput {
+  rating: IntFieldUpdateOperationsInput
+  comment: StringFieldUpdateOperationsInput
+  user: UserUpdateOneRequiredWithoutReviewsNestedInput
+}
+
+input IntFieldUpdateOperationsInput {
+  set: Int
+  increment: Int
+  decrement: Int
+  multiply: Int
+  divide: Int
+}
+
+input UserUpdateOneRequiredWithoutReviewsNestedInput {
+  create: UserCreateWithoutReviewsInput
+  connectOrCreate: UserCreateOrConnectWithoutReviewsInput
+  upsert: UserUpsertWithoutReviewsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutReviewsInput
+}
+
+input UserUpsertWithoutReviewsInput {
+  update: UserUpdateWithoutReviewsInput!
+  create: UserCreateWithoutReviewsInput!
+}
+
+input UserUpdateWithoutReviewsInput {
+  userName: StringFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
+}
+
+input ReviewUpdateWithWhereUniqueWithoutMovieInput {
+  where: ReviewWhereUniqueInput!
+  data: ReviewUpdateWithoutMovieInput!
+}
+
+input ReviewUpdateManyWithWhereWithoutMovieInput {
+  where: ReviewScalarWhereInput!
+  data: ReviewUpdateManyMutationInput!
+}
+
+input ReviewScalarWhereInput {
+  AND: [ReviewScalarWhereInput!]
+  OR: [ReviewScalarWhereInput!]
+  NOT: [ReviewScalarWhereInput!]
+  id: IntFilter
+  movieId: IntFilter
+  userId: IntFilter
+  rating: IntFilter
+  comment: StringFilter
+}
+
+input ReviewUpdateManyMutationInput {
+  rating: IntFieldUpdateOperationsInput
+  comment: StringFieldUpdateOperationsInput
 }

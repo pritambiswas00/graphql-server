@@ -2,32 +2,21 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { MoviesService } from './movies.service';
 import { Movie } from '@prisma/client';
 import { Movie as TMovie } from '~/@generated/movie/movie.model';
-import { CreateOneMovieArgs } from '~/@generated/movie/create-one-movie.args';
 import { MovieWhereUniqueInput } from '~/@generated/movie/movie-where-unique.input';
-import { UpdateOneMovieArgs } from '~/@generated/movie/update-one-movie.args';
 import { GraphQLError } from 'graphql';
 import { FindManyMovieArgs } from '~/@generated/movie/find-many-movie.args';
-
-type SortField = 'movieName' | 'description' | 'director' | 'releaseDate';
-export type SortOrder = 'asc' | 'desc';
-export interface MovieFilter {
-    OR: {
-        movieName?: { contains: string };
-        description?: { contains: string };
-        director?: { contains: string };
-    }[];
-}
-export interface MovieSort {
-    [field: string]: SortOrder;
-}
+import { MovieUpdateInput } from '~/@generated/movie/movie-update.input';
+import { MovieCreateInput } from '~/@generated/movie/movie-create.input';
 
 @Resolver(of => TMovie)
 export class MoviesResolver {
     constructor(private movieService: MoviesService) { }
 
+
+    //Find all movies, sort, Pagination, and filter
     @Query(returns => [TMovie])
     public async movies(
-        @Args() searchQuery:FindManyMovieArgs
+        @Args() searchQuery: FindManyMovieArgs
     ): Promise<Movie[]> {
         try {
             const movies = await this.movieService.findAllMovies(searchQuery);
@@ -37,8 +26,22 @@ export class MoviesResolver {
         }
     }
 
+    //Search Movie based on Id and Name
+    @Query(returns => TMovie)
+    public async movie(@Args("query") query: MovieWhereUniqueInput): Promise<Movie> {
+        try {
+            return this.movieService.findMovie(query);
+        } catch (error) {
+            if (error.code === "P2002") {
+                throw new Error(`Movie with name ${query.movieName} already exists.`);
+            }
+            throw new Error("Failed to create a new movie.");
+        }
+    }
+
+    //Create new Movie
     @Mutation(returns => TMovie)
-    async createMovie(@Args() movie: CreateOneMovieArgs): Promise<Movie> {
+    public async createMovie(@Args("movie") movie: MovieCreateInput): Promise<Movie> {
         try {
             return this.movieService.createMovie(movie);
         } catch (error) {
@@ -47,27 +50,28 @@ export class MoviesResolver {
         }
     }
 
+    //Update Movie
+    @Mutation(returns => TMovie)
+    public async updateMovie(
+        @Args("searchInput") searchInput: MovieWhereUniqueInput,
+        @Args('movie') movie: MovieUpdateInput,
+    ): Promise<Movie> {
+        try {
+            return this.movieService.updateMovie(searchInput, movie);
+        } catch (error) {
+            throw new GraphQLError(error?.message);
+        }
+    }
 
-    // @Query(returns => TMovie)
-    // async movie(@Args("data") data:MovieWhereUniqueInput):Promise<Movie>{
-    //       try{ 
-    //            return this.movieService.findMovieById(data.id);
-    //       }catch(error) {
-    //               throw new GraphQLError(error?.message);
-    //       }
-    // }
-
-    // @Mutation(returns => TMovie)
-    // async updateMovie(
-    //   @Args('data') data: MovieWhereUniqueInput,
-    //   @Args('movie') movie: UpdateOneMovieArgs,
-    // ): Promise<Movie> {
-    //   try {
-    //     return this.movieService.updateMovie(data, movie);
-    //   } catch (error) {
-    //     throw new GraphQLError(error?.message);
-    //   }
-    // }
+    //Delete Movie
+    @Mutation(returns => TMovie)
+    public async deleteMovie(@Args("query") query: MovieWhereUniqueInput): Promise<Movie> {
+        try {
+            return this.movieService.deleteMovie(query);
+        } catch (error) {
+            throw new GraphQLError(error?.message);
+        }
+    }
 
 
 

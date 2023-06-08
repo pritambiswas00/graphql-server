@@ -13,7 +13,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig  } from "@nestjs/apollo"
 import { ReviewResolver } from '~/review/review.resolver';
 import { APP_FILTER } from '@nestjs/core';
-import { HttpErrorFilter } from './httpErrorHandling';
+import { GraphqlErrorFilter } from './httpErrorHandling';
 
 
 
@@ -30,7 +30,7 @@ import { HttpErrorFilter } from './httpErrorHandling';
   controllers: [AppController],
   providers: [AppService, ReviewResolver,{
        provide: APP_FILTER,
-       useClass: HttpErrorFilter
+       useClass: GraphqlErrorFilter
   }],
 })
 export class AppModule {}
