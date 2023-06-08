@@ -17,15 +17,12 @@ export class FindManyReviewArgs {
     @Field(() => [ReviewOrderByWithRelationInput], {nullable:true})
     orderBy?: Array<ReviewOrderByWithRelationInput>;
 
-    @Field(() => ReviewWhereUniqueInput, {nullable:true})
-    cursor?: ReviewWhereUniqueInput;
-
-    @Field(() => Int, {nullable:true})
-    take?: number;
-
     @Field(() => Int, {nullable:true})
     skip?: number;
 
-    @Field(() => [ReviewScalarFieldEnum], {nullable:true})
-    distinct?: Array<keyof typeof ReviewScalarFieldEnum>;
+    @Field(()=>Int,{ nullable: true, defaultValue: 1 })
+    page? : number;
+
+    @Field(()=>Int,{ nullable: true, defaultValue: 10 })
+    limit? : number;
 }

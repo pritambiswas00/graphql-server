@@ -40,6 +40,6 @@ model Review {
   rating    Int
   comment   String
 
-  movie     Movie    @relation(fields: [movieId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

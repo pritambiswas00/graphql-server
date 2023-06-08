@@ -13,7 +13,8 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig  } from "@nestjs/apollo"
 import { ReviewResolver } from '~/review/review.resolver';
 import { APP_FILTER } from '@nestjs/core';
-import { GraphqlErrorFilter } from './httpErrorHandling';
+import { GraphqlErrorFilter } from '~/httpErrorHandling';
+import { ReviewModule } from '~/review/review.module';
 
 
 
@@ -26,9 +27,9 @@ import { GraphqlErrorFilter } from './httpErrorHandling';
   }), GraphQLModule.forRoot<ApolloDriverConfig>({
            driver: ApolloDriver,
            autoSchemaFile: join(process.cwd(),"src/schema.gql"),
-  }),AuthModule, UserModule, MoviesModule, DatabaseModule],
+  }),AuthModule, UserModule, MoviesModule, DatabaseModule, ReviewModule],
   controllers: [AppController],
-  providers: [AppService, ReviewResolver,{
+  providers: [AppService,{
        provide: APP_FILTER,
        useClass: GraphqlErrorFilter
   }],
