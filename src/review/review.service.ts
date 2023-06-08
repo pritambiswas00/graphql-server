@@ -5,6 +5,7 @@ import { FindManyReviewArgs } from "~/@generated/review/find-many-review.args";
 import { FindUniqueReviewOrThrowArgs } from "~/@generated/review/find-unique-review-or-throw.args";
 import { ReviewCreateInput } from "~/@generated/review/review-create.input";
 import { ReviewUpdateInput } from "~/@generated/review/review-update.input";
+import { ReviewWhereUniqueInput } from "~/@generated/review/review-where-unique.input";
 import { DatabaseService } from "~/DataBase/database.service";
 
 
@@ -40,11 +41,11 @@ export class ReviewService {
      }
 
      //Edit Review
-     public async updateReview(query: FindUniqueReviewOrThrowArgs, review: ReviewUpdateInput): Promise<Review> {
+     public async updateReview(query: ReviewWhereUniqueInput, review: ReviewUpdateInput): Promise<Review> {
           try {
                return this.databaseService.review.update({
                     where: {
-                         id: query.where.id
+                         id: query.id
                     },
                     data: review
                })
@@ -54,12 +55,10 @@ export class ReviewService {
      }
 
      //Delete Review
-     public async deleteReview(query: DeleteOneReviewArgs): Promise<Review> {
+     public async deleteReview(query: ReviewWhereUniqueInput): Promise<Review> {
           try {
                return this.databaseService.review.delete({
-                    where: {
-                         id: query.where.id
-                    }
+                    where: query
                })
           } catch (error) {
                throw new Error(error?.message)

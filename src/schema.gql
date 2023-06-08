@@ -282,8 +282,8 @@ type Mutation {
   updateMovie(searchInput: MovieWhereUniqueInput!, movie: MovieUpdateInput!): Movie!
   deleteMovie(query: MovieWhereUniqueInput!): Movie!
   createReview(review: ReviewCreateInput!): Review!
-  updateReview(where: ReviewWhereUniqueInput!, review: ReviewUpdateInput!): Review!
-  deleteReview(where: ReviewWhereUniqueInput!): Review!
+  updateReview(seachInput: ReviewWhereUniqueInput!, review: ReviewUpdateInput!): Review!
+  deleteReview(searchInput: ReviewWhereUniqueInput!): Review!
 }
 
 input UserCreateInput {

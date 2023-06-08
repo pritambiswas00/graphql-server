@@ -7,6 +7,7 @@ import { FindUniqueReviewOrThrowArgs } from '~/@generated/review/find-unique-rev
 import { ReviewCreateInput } from '~/@generated/review/review-create.input';
 import { ReviewUpdateInput } from '~/@generated/review/review-update.input';
 import { FindManyReviewArgs } from '~/@generated/review/find-many-review.args';
+import { ReviewWhereUniqueInput } from '~/@generated/review/review-where-unique.input';
 
 @Resolver(of => TReview)
 export class ReviewResolver {
@@ -35,7 +36,7 @@ export class ReviewResolver {
 
     //Edit Review
     @Mutation(returns => TReview)
-    public async updateReview(@Args() query: FindUniqueReviewOrThrowArgs, @Args("review") review: ReviewUpdateInput): Promise<Review> {
+    public async updateReview(@Args("seachInput") query: ReviewWhereUniqueInput, @Args("review") review: ReviewUpdateInput): Promise<Review> {
         try {
             return this.reviewService.updateReview(query, review);
 
@@ -46,7 +47,7 @@ export class ReviewResolver {
 
     //Delete Review
     @Mutation(returns => TReview)
-    public async deleteReview(@Args() query: FindUniqueReviewOrThrowArgs): Promise<Review> {
+    public async deleteReview(@Args("searchInput") query: ReviewWhereUniqueInput): Promise<Review> {
            try{
                return this.reviewService.deleteReview(query);
            }catch(error){
