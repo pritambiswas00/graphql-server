@@ -31,8 +31,17 @@ type Review {
   user: User!
 }
 
+type Session {
+  id: ID!
+  sessionToken: String!
+  userId: Int!
+  expires: DateTime!
+  user: User!
+}
+
 type UserCount {
   reviews: Int!
+  session: Int!
 }
 
 type User {
@@ -41,13 +50,14 @@ type User {
   email: String!
   password: String!
   reviews: [Review!]
+  session: [Session!]
   _count: UserCount!
 }
 
 type Query {
-  movies(where: MovieWhereInput, orderBy: [MovieOrderByWithRelationInput!], page: Int = 1, limit: Int = 10): [Movie!]!
+  movies(where: MovieWhereInput, orderBy: [MovieOrderByWithRelationInput!], cursor: MovieWhereUniqueInput, take: Int, skip: Int, distinct: [MovieScalarFieldEnum!], page: Int = 1, limit: Int = 10): [Movie!]!
   movie(query: MovieWhereUniqueInput!): Movie!
-  findReviewsForMovie(where: ReviewWhereInput, orderBy: [ReviewOrderByWithRelationInput!], skip: Int, page: Int = 1, limit: Int = 10): [Review!]!
+  findReviewsForMovie(where: ReviewWhereInput, orderBy: [ReviewOrderByWithRelationInput!], cursor: ReviewWhereUniqueInput, take: Int, skip: Int, distinct: [ReviewScalarFieldEnum!], page: Int = 1, limit: Int = 10): [Review!]!
 }
 
 input MovieWhereInput {
@@ -178,6 +188,24 @@ input UserWhereInput {
   email: StringFilter
   password: StringFilter
   reviews: ReviewListRelationFilter
+  session: SessionListRelationFilter
+}
+
+input SessionListRelationFilter {
+  every: SessionWhereInput
+  some: SessionWhereInput
+  none: SessionWhereInput
+}
+
+input SessionWhereInput {
+  AND: [SessionWhereInput!]
+  OR: [SessionWhereInput!]
+  NOT: [SessionWhereInput!]
+  id: IntFilter
+  sessionToken: StringFilter
+  userId: IntFilter
+  expires: DateTimeFilter
+  user: UserRelationFilter
 }
 
 input MovieOrderByWithRelationInput {
@@ -203,6 +231,14 @@ input MovieWhereUniqueInput {
   movieName: String
 }
 
+enum MovieScalarFieldEnum {
+  id
+  movieName
+  description
+  director
+  releaseDate
+}
+
 input ReviewOrderByWithRelationInput {
   id: SortOrder
   movieId: SortOrder
@@ -219,6 +255,23 @@ input UserOrderByWithRelationInput {
   email: SortOrder
   password: SortOrder
   reviews: ReviewOrderByRelationAggregateInput
+  session: SessionOrderByRelationAggregateInput
+}
+
+input SessionOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input ReviewWhereUniqueInput {
+  id: Int
+}
+
+enum ReviewScalarFieldEnum {
+  id
+  movieId
+  userId
+  rating
+  comment
 }
 
 type Mutation {
@@ -238,6 +291,7 @@ input UserCreateInput {
   email: String!
   password: String!
   reviews: ReviewCreateNestedManyWithoutUserInput
+  session: SessionCreateNestedManyWithoutUserInput
 }
 
 input ReviewCreateNestedManyWithoutUserInput {
@@ -276,10 +330,6 @@ input ReviewCreateOrConnectWithoutUserInput {
   create: ReviewCreateWithoutUserInput!
 }
 
-input ReviewWhereUniqueInput {
-  id: Int
-}
-
 input ReviewCreateManyUserInputEnvelope {
   data: [ReviewCreateManyUserInput!]!
   skipDuplicates: Boolean
@@ -290,6 +340,39 @@ input ReviewCreateManyUserInput {
   movieId: Int!
   rating: Int!
   comment: String!
+}
+
+input SessionCreateNestedManyWithoutUserInput {
+  create: [SessionCreateWithoutUserInput!]
+  connectOrCreate: [SessionCreateOrConnectWithoutUserInput!]
+  createMany: SessionCreateManyUserInputEnvelope
+  connect: [SessionWhereUniqueInput!]
+}
+
+input SessionCreateWithoutUserInput {
+  sessionToken: String!
+  expires: DateTime!
+}
+
+input SessionCreateOrConnectWithoutUserInput {
+  where: SessionWhereUniqueInput!
+  create: SessionCreateWithoutUserInput!
+}
+
+input SessionWhereUniqueInput {
+  id: Int
+  sessionToken: String
+}
+
+input SessionCreateManyUserInputEnvelope {
+  data: [SessionCreateManyUserInput!]!
+  skipDuplicates: Boolean
+}
+
+input SessionCreateManyUserInput {
+  id: Int
+  sessionToken: String!
+  expires: DateTime!
 }
 
 input LoginUserInput {
@@ -307,6 +390,7 @@ input UserUpdateInput {
   email: StringFieldUpdateOperationsInput
   password: StringFieldUpdateOperationsInput
   reviews: ReviewUpdateManyWithoutUserNestedInput
+  session: SessionUpdateManyWithoutUserNestedInput
 }
 
 input StringFieldUpdateOperationsInput {
@@ -397,6 +481,56 @@ input ReviewUpdateManyMutationInput {
   comment: StringFieldUpdateOperationsInput
 }
 
+input SessionUpdateManyWithoutUserNestedInput {
+  create: [SessionCreateWithoutUserInput!]
+  connectOrCreate: [SessionCreateOrConnectWithoutUserInput!]
+  upsert: [SessionUpsertWithWhereUniqueWithoutUserInput!]
+  createMany: SessionCreateManyUserInputEnvelope
+  set: [SessionWhereUniqueInput!]
+  disconnect: [SessionWhereUniqueInput!]
+  delete: [SessionWhereUniqueInput!]
+  connect: [SessionWhereUniqueInput!]
+  update: [SessionUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [SessionUpdateManyWithWhereWithoutUserInput!]
+  deleteMany: [SessionScalarWhereInput!]
+}
+
+input SessionUpsertWithWhereUniqueWithoutUserInput {
+  where: SessionWhereUniqueInput!
+  update: SessionUpdateWithoutUserInput!
+  create: SessionCreateWithoutUserInput!
+}
+
+input SessionUpdateWithoutUserInput {
+  sessionToken: StringFieldUpdateOperationsInput
+  expires: DateTimeFieldUpdateOperationsInput
+}
+
+input SessionUpdateWithWhereUniqueWithoutUserInput {
+  where: SessionWhereUniqueInput!
+  data: SessionUpdateWithoutUserInput!
+}
+
+input SessionUpdateManyWithWhereWithoutUserInput {
+  where: SessionScalarWhereInput!
+  data: SessionUpdateManyMutationInput!
+}
+
+input SessionScalarWhereInput {
+  AND: [SessionScalarWhereInput!]
+  OR: [SessionScalarWhereInput!]
+  NOT: [SessionScalarWhereInput!]
+  id: IntFilter
+  sessionToken: StringFilter
+  userId: IntFilter
+  expires: DateTimeFilter
+}
+
+input SessionUpdateManyMutationInput {
+  sessionToken: StringFieldUpdateOperationsInput
+  expires: DateTimeFieldUpdateOperationsInput
+}
+
 input MovieCreateInput {
   movieName: String!
   description: String!
@@ -428,6 +562,7 @@ input UserCreateWithoutReviewsInput {
   userName: String!
   email: String!
   password: String!
+  session: SessionCreateNestedManyWithoutUserInput
 }
 
 input UserCreateOrConnectWithoutReviewsInput {
@@ -453,6 +588,7 @@ input ReviewCreateManyMovieInput {
 }
 
 input MovieUpdateInput {
+  movieName: StringFieldUpdateOperationsInput
   description: StringFieldUpdateOperationsInput
   director: StringFieldUpdateOperationsInput
   releaseDate: DateTimeFieldUpdateOperationsInput
@@ -502,6 +638,7 @@ input UserUpdateWithoutReviewsInput {
   userName: StringFieldUpdateOperationsInput
   email: StringFieldUpdateOperationsInput
   password: StringFieldUpdateOperationsInput
+  session: SessionUpdateManyWithoutUserNestedInput
 }
 
 input ReviewUpdateWithWhereUniqueWithoutMovieInput {
