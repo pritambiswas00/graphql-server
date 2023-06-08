@@ -1,0 +1,278 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserCount {
+  reviews: Int!
+}
+
+type User {
+  id: ID!
+  userName: String!
+  email: String!
+  password: String!
+  reviews: [Review!]
+  _count: UserCount!
+}
+
+type Review {
+  id: ID!
+  movieId: Int!
+  userId: Int!
+  rating: Int!
+  comment: String!
+  movie: Movie!
+  user: User!
+}
+
+type MovieCount {
+  reviews: Int!
+}
+
+type Movie {
+  id: ID!
+  movieName: String!
+  description: String!
+  director: String!
+  releaseDate: DateTime!
+  reviews: [Review!]
+  _count: MovieCount!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Query {
+  movies(where: MovieWhereInput, orderBy: [MovieOrderByWithRelationInput!], cursor: MovieWhereUniqueInput, take: Int, skip: Int, distinct: [MovieScalarFieldEnum!], page: Int = 1, limit: Int = 10): [Movie!]!
+}
+
+input MovieWhereInput {
+  AND: [MovieWhereInput!]
+  OR: [MovieWhereInput!]
+  NOT: [MovieWhereInput!]
+  id: IntFilter
+  movieName: StringFilter
+  description: StringFilter
+  director: StringFilter
+  releaseDate: DateTimeFilter
+  reviews: ReviewListRelationFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input ReviewListRelationFilter {
+  every: ReviewWhereInput
+  some: ReviewWhereInput
+  none: ReviewWhereInput
+}
+
+input ReviewWhereInput {
+  AND: [ReviewWhereInput!]
+  OR: [ReviewWhereInput!]
+  NOT: [ReviewWhereInput!]
+  id: IntFilter
+  movieId: IntFilter
+  userId: IntFilter
+  rating: IntFilter
+  comment: StringFilter
+  movie: MovieRelationFilter
+  user: UserRelationFilter
+}
+
+input MovieRelationFilter {
+  is: MovieWhereInput
+  isNot: MovieWhereInput
+}
+
+input UserRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: IntFilter
+  userName: StringFilter
+  email: StringFilter
+  password: StringFilter
+  reviews: ReviewListRelationFilter
+}
+
+input MovieOrderByWithRelationInput {
+  id: SortOrder
+  movieName: SortOrder
+  description: SortOrder
+  director: SortOrder
+  releaseDate: SortOrder
+  reviews: ReviewOrderByRelationAggregateInput
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+input ReviewOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input MovieWhereUniqueInput {
+  id: Int
+  movieName: String
+}
+
+enum MovieScalarFieldEnum {
+  id
+  movieName
+  description
+  director
+  releaseDate
+}
+
+type Mutation {
+  createMovie(data: MovieCreateInput!): Movie!
+}
+
+input MovieCreateInput {
+  movieName: String!
+  description: String!
+  director: String!
+  releaseDate: DateTime!
+  reviews: ReviewCreateNestedManyWithoutMovieInput
+}
+
+input ReviewCreateNestedManyWithoutMovieInput {
+  create: [ReviewCreateWithoutMovieInput!]
+  connectOrCreate: [ReviewCreateOrConnectWithoutMovieInput!]
+  createMany: ReviewCreateManyMovieInputEnvelope
+  connect: [ReviewWhereUniqueInput!]
+}
+
+input ReviewCreateWithoutMovieInput {
+  rating: Int!
+  comment: String!
+  user: UserCreateNestedOneWithoutReviewsInput!
+}
+
+input UserCreateNestedOneWithoutReviewsInput {
+  create: UserCreateWithoutReviewsInput
+  connectOrCreate: UserCreateOrConnectWithoutReviewsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutReviewsInput {
+  userName: String!
+  email: String!
+  password: String!
+}
+
+input UserCreateOrConnectWithoutReviewsInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutReviewsInput!
+}
+
+input UserWhereUniqueInput {
+  id: Int
+  email: String
+}
+
+input ReviewCreateOrConnectWithoutMovieInput {
+  where: ReviewWhereUniqueInput!
+  create: ReviewCreateWithoutMovieInput!
+}
+
+input ReviewWhereUniqueInput {
+  id: Int
+}
+
+input ReviewCreateManyMovieInputEnvelope {
+  data: [ReviewCreateManyMovieInput!]!
+  skipDuplicates: Boolean
+}
+
+input ReviewCreateManyMovieInput {
+  id: Int
+  userId: Int!
+  rating: Int!
+  comment: String!
+}

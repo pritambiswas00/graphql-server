@@ -10,18 +10,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator nestgraphql {
+     provider = "node node_modules/prisma-nestjs-graphql"
+     output = "../src/@generated"
+}
+
 
 model User {
-  id      Int      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   userName  String
-  email     String
+  email     String   @unique
   password  String
   reviews   Review[]
 }
 
 model Movie {
-  id          Int      @id @default(autoincrement())
-  movieName   String
+  id          Int       @id @default(autoincrement())
+  movieName   String    @unique
   description String
   director    String
   releaseDate DateTime
@@ -29,12 +34,12 @@ model Movie {
 }
 
 model Review {
-  id      Int     @id @default(autoincrement())
-  movieId Int
-  userId  Int
-  rating  Int
-  comment String
+  id        Int      @id @default(autoincrement())
+  movieId   Int
+  userId    Int
+  rating    Int
+  comment   String
 
-  movie   Movie   @relation(fields: [movieId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
