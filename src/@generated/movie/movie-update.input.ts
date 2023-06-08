@@ -8,6 +8,9 @@ import { ReviewUpdateManyWithoutMovieNestedInput } from '../review/review-update
 export class MovieUpdateInput {
 
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
+    movieName?: StringFieldUpdateOperationsInput;
+
+    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     description?: StringFieldUpdateOperationsInput;
 
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})

@@ -22,6 +22,7 @@ model User {
   email     String   @unique
   password  String
   reviews   Review[]
+  session   Session[]
 }
 
 model Movie {
@@ -42,4 +43,12 @@ model Review {
 
   movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+    id                 Int     @id @default(autoincrement())
+    sessionToken       String  @unique
+    userId             Int
+    expires            DateTime
+    user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

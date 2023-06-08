@@ -10,4 +10,8 @@ export class UpdateOneMovieArgs {
     @Field(() => MovieUpdateInput, {nullable:false})
     @Type(() => MovieUpdateInput)
     data!: MovieUpdateInput;
+
+    @Field(() => MovieWhereUniqueInput, {nullable:false})
+    @Type(() => MovieWhereUniqueInput)
+    where!: MovieWhereUniqueInput;
 }

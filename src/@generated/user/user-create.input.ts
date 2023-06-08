@@ -1,6 +1,7 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { ReviewCreateNestedManyWithoutUserInput } from '../review/review-create-nested-many-without-user.input';
+import { SessionCreateNestedManyWithoutUserInput } from '../session/session-create-nested-many-without-user.input';
 
 @InputType()
 export class UserCreateInput {
@@ -16,4 +17,7 @@ export class UserCreateInput {
 
     @Field(() => ReviewCreateNestedManyWithoutUserInput, {nullable:true})
     reviews?: ReviewCreateNestedManyWithoutUserInput;
+
+    @Field(() => SessionCreateNestedManyWithoutUserInput, {nullable:true})
+    session?: SessionCreateNestedManyWithoutUserInput;
 }

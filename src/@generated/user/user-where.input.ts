@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { IntFilter } from '../prisma/int-filter.input';
 import { StringFilter } from '../prisma/string-filter.input';
 import { ReviewListRelationFilter } from '../review/review-list-relation-filter.input';
+import { SessionListRelationFilter } from '../session/session-list-relation-filter.input';
 
 @InputType()
 export class UserWhereInput {
@@ -30,4 +31,7 @@ export class UserWhereInput {
 
     @Field(() => ReviewListRelationFilter, {nullable:true})
     reviews?: ReviewListRelationFilter;
+
+    @Field(() => SessionListRelationFilter, {nullable:true})
+    session?: SessionListRelationFilter;
 }

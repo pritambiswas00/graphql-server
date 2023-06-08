@@ -7,4 +7,7 @@ export class UserCount {
 
     @Field(() => Int, {nullable:false})
     reviews?: number;
+
+    @Field(() => Int, {nullable:false})
+    session?: number;
 }
