@@ -21,6 +21,9 @@ export class MovieUncheckedCreateInput {
     @Field(() => Date, {nullable:false})
     releaseDate!: Date | string;
 
+    @Field(() => Int, {nullable:false})
+    userId!: number;
+
     @Field(() => ReviewUncheckedCreateNestedManyWithoutMovieInput, {nullable:true})
     reviews?: ReviewUncheckedCreateNestedManyWithoutMovieInput;
 }

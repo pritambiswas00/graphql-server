@@ -7,6 +7,8 @@ import { GraphQLError } from 'graphql';
 import { FindManyMovieArgs } from '~/@generated/movie/find-many-movie.args';
 import { MovieUpdateInput } from '~/@generated/movie/movie-update.input';
 import { MovieCreateInput } from '~/@generated/movie/movie-create.input';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '~/auth/Guards/jwt.guard';
 
 @Resolver(of => TMovie)
 export class MoviesResolver {
@@ -15,6 +17,7 @@ export class MoviesResolver {
 
     //Find all movies, sort, Pagination, and filter
     @Query(returns => [TMovie])
+    @UseGuards(JwtAuthGuard)
     public async movies(
         @Args() searchQuery: FindManyMovieArgs
     ): Promise<Movie[]> {
@@ -28,6 +31,7 @@ export class MoviesResolver {
 
     //Search Movie based on Id and Name
     @Query(returns => TMovie)
+    @UseGuards(JwtAuthGuard)
     public async movie(@Args("query") query: MovieWhereUniqueInput): Promise<Movie> {
         try {
             return this.movieService.findMovie(query);
@@ -41,6 +45,7 @@ export class MoviesResolver {
 
     //Create new Movie
     @Mutation(returns => TMovie)
+    @UseGuards(JwtAuthGuard)
     public async createMovie(@Args("movie") movie: MovieCreateInput): Promise<Movie> {
         try {
             return this.movieService.createMovie(movie);
@@ -52,6 +57,7 @@ export class MoviesResolver {
 
     //Update Movie
     @Mutation(returns => TMovie)
+    @UseGuards(JwtAuthGuard)
     public async updateMovie(
         @Args("searchInput") searchInput: MovieWhereUniqueInput,
         @Args('movie') movie: MovieUpdateInput,
@@ -65,6 +71,7 @@ export class MoviesResolver {
 
     //Delete Movie
     @Mutation(returns => TMovie)
+    @UseGuards(JwtAuthGuard)
     public async deleteMovie(@Args("query") query: MovieWhereUniqueInput): Promise<Movie> {
         try {
             return this.movieService.deleteMovie(query);

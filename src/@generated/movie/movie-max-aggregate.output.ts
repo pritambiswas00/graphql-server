@@ -19,4 +19,7 @@ export class MovieMaxAggregate {
 
     @Field(() => Date, {nullable:true})
     releaseDate?: Date | string;
+
+    @Field(() => Int, {nullable:true})
+    userId?: number;
 }

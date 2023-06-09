@@ -21,4 +21,7 @@ export class MovieUncheckedUpdateWithoutReviewsInput {
 
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     releaseDate?: DateTimeFieldUpdateOperationsInput;
+
+    @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
+    userId?: IntFieldUpdateOperationsInput;
 }

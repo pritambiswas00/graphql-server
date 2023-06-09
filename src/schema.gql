@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AccessToken {
+  accessToken: String!
+}
+
 type MovieCount {
   reviews: Int!
 }
@@ -275,15 +279,20 @@ enum ReviewScalarFieldEnum {
 }
 
 type Mutation {
-  createUser(user: UserCreateInput!): String!
-  loginUser(user: LoginUserInput!): String!
-  updateUser(where: UserWhereUniqueInput!, user: UserUpdateInput!): User!
+  login(user: LoginUserInput!): AccessToken!
+  register(input: UserCreateInput!): AccessToken!
+  changePassword(password: String!): String!
   createMovie(movie: MovieCreateInput!): Movie!
   updateMovie(searchInput: MovieWhereUniqueInput!, movie: MovieUpdateInput!): Movie!
   deleteMovie(query: MovieWhereUniqueInput!): Movie!
   createReview(review: ReviewCreateInput!): Review!
   updateReview(seachInput: ReviewWhereUniqueInput!, review: ReviewUpdateInput!): Review!
   deleteReview(searchInput: ReviewWhereUniqueInput!): Review!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
 }
 
 input UserCreateInput {
@@ -375,9 +384,43 @@ input SessionCreateManyUserInput {
   expires: DateTime!
 }
 
-input LoginUserInput {
+input MovieCreateInput {
+  movieName: String!
+  description: String!
+  director: String!
+  releaseDate: DateTime!
+  reviews: ReviewCreateNestedManyWithoutMovieInput
+}
+
+input ReviewCreateNestedManyWithoutMovieInput {
+  create: [ReviewCreateWithoutMovieInput!]
+  connectOrCreate: [ReviewCreateOrConnectWithoutMovieInput!]
+  createMany: ReviewCreateManyMovieInputEnvelope
+  connect: [ReviewWhereUniqueInput!]
+}
+
+input ReviewCreateWithoutMovieInput {
+  rating: Int!
+  comment: String!
+  user: UserCreateNestedOneWithoutReviewsInput!
+}
+
+input UserCreateNestedOneWithoutReviewsInput {
+  create: UserCreateWithoutReviewsInput
+  connectOrCreate: UserCreateOrConnectWithoutReviewsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutReviewsInput {
+  userName: String!
   email: String!
   password: String!
+  session: SessionCreateNestedManyWithoutUserInput
+}
+
+input UserCreateOrConnectWithoutReviewsInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutReviewsInput!
 }
 
 input UserWhereUniqueInput {
@@ -385,42 +428,63 @@ input UserWhereUniqueInput {
   email: String
 }
 
-input UserUpdateInput {
-  userName: StringFieldUpdateOperationsInput
-  email: StringFieldUpdateOperationsInput
-  password: StringFieldUpdateOperationsInput
-  reviews: ReviewUpdateManyWithoutUserNestedInput
-  session: SessionUpdateManyWithoutUserNestedInput
+input ReviewCreateOrConnectWithoutMovieInput {
+  where: ReviewWhereUniqueInput!
+  create: ReviewCreateWithoutMovieInput!
+}
+
+input ReviewCreateManyMovieInputEnvelope {
+  data: [ReviewCreateManyMovieInput!]!
+  skipDuplicates: Boolean
+}
+
+input ReviewCreateManyMovieInput {
+  id: Int
+  userId: Int!
+  rating: Int!
+  comment: String!
+}
+
+input MovieUpdateInput {
+  movieName: StringFieldUpdateOperationsInput
+  description: StringFieldUpdateOperationsInput
+  director: StringFieldUpdateOperationsInput
+  releaseDate: DateTimeFieldUpdateOperationsInput
+  reviews: ReviewUpdateManyWithoutMovieNestedInput
 }
 
 input StringFieldUpdateOperationsInput {
   set: String
 }
 
-input ReviewUpdateManyWithoutUserNestedInput {
-  create: [ReviewCreateWithoutUserInput!]
-  connectOrCreate: [ReviewCreateOrConnectWithoutUserInput!]
-  upsert: [ReviewUpsertWithWhereUniqueWithoutUserInput!]
-  createMany: ReviewCreateManyUserInputEnvelope
+input DateTimeFieldUpdateOperationsInput {
+  set: DateTime
+}
+
+input ReviewUpdateManyWithoutMovieNestedInput {
+  create: [ReviewCreateWithoutMovieInput!]
+  connectOrCreate: [ReviewCreateOrConnectWithoutMovieInput!]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutMovieInput!]
+  createMany: ReviewCreateManyMovieInputEnvelope
   set: [ReviewWhereUniqueInput!]
   disconnect: [ReviewWhereUniqueInput!]
   delete: [ReviewWhereUniqueInput!]
   connect: [ReviewWhereUniqueInput!]
-  update: [ReviewUpdateWithWhereUniqueWithoutUserInput!]
-  updateMany: [ReviewUpdateManyWithWhereWithoutUserInput!]
+  update: [ReviewUpdateWithWhereUniqueWithoutMovieInput!]
+  updateMany: [ReviewUpdateManyWithWhereWithoutMovieInput!]
   deleteMany: [ReviewScalarWhereInput!]
 }
 
-input ReviewUpsertWithWhereUniqueWithoutUserInput {
+input ReviewUpsertWithWhereUniqueWithoutMovieInput {
   where: ReviewWhereUniqueInput!
-  update: ReviewUpdateWithoutUserInput!
-  create: ReviewCreateWithoutUserInput!
+  update: ReviewUpdateWithoutMovieInput!
+  create: ReviewCreateWithoutMovieInput!
 }
 
-input ReviewUpdateWithoutUserInput {
+input ReviewUpdateWithoutMovieInput {
   rating: IntFieldUpdateOperationsInput
   comment: StringFieldUpdateOperationsInput
-  movie: MovieUpdateOneRequiredWithoutReviewsNestedInput
+  user: UserUpdateOneRequiredWithoutReviewsNestedInput
 }
 
 input IntFieldUpdateOperationsInput {
@@ -431,54 +495,24 @@ input IntFieldUpdateOperationsInput {
   divide: Int
 }
 
-input MovieUpdateOneRequiredWithoutReviewsNestedInput {
-  create: MovieCreateWithoutReviewsInput
-  connectOrCreate: MovieCreateOrConnectWithoutReviewsInput
-  upsert: MovieUpsertWithoutReviewsInput
-  connect: MovieWhereUniqueInput
-  update: MovieUpdateWithoutReviewsInput
+input UserUpdateOneRequiredWithoutReviewsNestedInput {
+  create: UserCreateWithoutReviewsInput
+  connectOrCreate: UserCreateOrConnectWithoutReviewsInput
+  upsert: UserUpsertWithoutReviewsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutReviewsInput
 }
 
-input MovieUpsertWithoutReviewsInput {
-  update: MovieUpdateWithoutReviewsInput!
-  create: MovieCreateWithoutReviewsInput!
+input UserUpsertWithoutReviewsInput {
+  update: UserUpdateWithoutReviewsInput!
+  create: UserCreateWithoutReviewsInput!
 }
 
-input MovieUpdateWithoutReviewsInput {
-  movieName: StringFieldUpdateOperationsInput
-  description: StringFieldUpdateOperationsInput
-  director: StringFieldUpdateOperationsInput
-  releaseDate: DateTimeFieldUpdateOperationsInput
-}
-
-input DateTimeFieldUpdateOperationsInput {
-  set: DateTime
-}
-
-input ReviewUpdateWithWhereUniqueWithoutUserInput {
-  where: ReviewWhereUniqueInput!
-  data: ReviewUpdateWithoutUserInput!
-}
-
-input ReviewUpdateManyWithWhereWithoutUserInput {
-  where: ReviewScalarWhereInput!
-  data: ReviewUpdateManyMutationInput!
-}
-
-input ReviewScalarWhereInput {
-  AND: [ReviewScalarWhereInput!]
-  OR: [ReviewScalarWhereInput!]
-  NOT: [ReviewScalarWhereInput!]
-  id: IntFilter
-  movieId: IntFilter
-  userId: IntFilter
-  rating: IntFilter
-  comment: StringFilter
-}
-
-input ReviewUpdateManyMutationInput {
-  rating: IntFieldUpdateOperationsInput
-  comment: StringFieldUpdateOperationsInput
+input UserUpdateWithoutReviewsInput {
+  userName: StringFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
+  session: SessionUpdateManyWithoutUserNestedInput
 }
 
 input SessionUpdateManyWithoutUserNestedInput {
@@ -531,116 +565,6 @@ input SessionUpdateManyMutationInput {
   expires: DateTimeFieldUpdateOperationsInput
 }
 
-input MovieCreateInput {
-  movieName: String!
-  description: String!
-  director: String!
-  releaseDate: DateTime!
-  reviews: ReviewCreateNestedManyWithoutMovieInput
-}
-
-input ReviewCreateNestedManyWithoutMovieInput {
-  create: [ReviewCreateWithoutMovieInput!]
-  connectOrCreate: [ReviewCreateOrConnectWithoutMovieInput!]
-  createMany: ReviewCreateManyMovieInputEnvelope
-  connect: [ReviewWhereUniqueInput!]
-}
-
-input ReviewCreateWithoutMovieInput {
-  rating: Int!
-  comment: String!
-  user: UserCreateNestedOneWithoutReviewsInput!
-}
-
-input UserCreateNestedOneWithoutReviewsInput {
-  create: UserCreateWithoutReviewsInput
-  connectOrCreate: UserCreateOrConnectWithoutReviewsInput
-  connect: UserWhereUniqueInput
-}
-
-input UserCreateWithoutReviewsInput {
-  userName: String!
-  email: String!
-  password: String!
-  session: SessionCreateNestedManyWithoutUserInput
-}
-
-input UserCreateOrConnectWithoutReviewsInput {
-  where: UserWhereUniqueInput!
-  create: UserCreateWithoutReviewsInput!
-}
-
-input ReviewCreateOrConnectWithoutMovieInput {
-  where: ReviewWhereUniqueInput!
-  create: ReviewCreateWithoutMovieInput!
-}
-
-input ReviewCreateManyMovieInputEnvelope {
-  data: [ReviewCreateManyMovieInput!]!
-  skipDuplicates: Boolean
-}
-
-input ReviewCreateManyMovieInput {
-  id: Int
-  userId: Int!
-  rating: Int!
-  comment: String!
-}
-
-input MovieUpdateInput {
-  movieName: StringFieldUpdateOperationsInput
-  description: StringFieldUpdateOperationsInput
-  director: StringFieldUpdateOperationsInput
-  releaseDate: DateTimeFieldUpdateOperationsInput
-  reviews: ReviewUpdateManyWithoutMovieNestedInput
-}
-
-input ReviewUpdateManyWithoutMovieNestedInput {
-  create: [ReviewCreateWithoutMovieInput!]
-  connectOrCreate: [ReviewCreateOrConnectWithoutMovieInput!]
-  upsert: [ReviewUpsertWithWhereUniqueWithoutMovieInput!]
-  createMany: ReviewCreateManyMovieInputEnvelope
-  set: [ReviewWhereUniqueInput!]
-  disconnect: [ReviewWhereUniqueInput!]
-  delete: [ReviewWhereUniqueInput!]
-  connect: [ReviewWhereUniqueInput!]
-  update: [ReviewUpdateWithWhereUniqueWithoutMovieInput!]
-  updateMany: [ReviewUpdateManyWithWhereWithoutMovieInput!]
-  deleteMany: [ReviewScalarWhereInput!]
-}
-
-input ReviewUpsertWithWhereUniqueWithoutMovieInput {
-  where: ReviewWhereUniqueInput!
-  update: ReviewUpdateWithoutMovieInput!
-  create: ReviewCreateWithoutMovieInput!
-}
-
-input ReviewUpdateWithoutMovieInput {
-  rating: IntFieldUpdateOperationsInput
-  comment: StringFieldUpdateOperationsInput
-  user: UserUpdateOneRequiredWithoutReviewsNestedInput
-}
-
-input UserUpdateOneRequiredWithoutReviewsNestedInput {
-  create: UserCreateWithoutReviewsInput
-  connectOrCreate: UserCreateOrConnectWithoutReviewsInput
-  upsert: UserUpsertWithoutReviewsInput
-  connect: UserWhereUniqueInput
-  update: UserUpdateWithoutReviewsInput
-}
-
-input UserUpsertWithoutReviewsInput {
-  update: UserUpdateWithoutReviewsInput!
-  create: UserCreateWithoutReviewsInput!
-}
-
-input UserUpdateWithoutReviewsInput {
-  userName: StringFieldUpdateOperationsInput
-  email: StringFieldUpdateOperationsInput
-  password: StringFieldUpdateOperationsInput
-  session: SessionUpdateManyWithoutUserNestedInput
-}
-
 input ReviewUpdateWithWhereUniqueWithoutMovieInput {
   where: ReviewWhereUniqueInput!
   data: ReviewUpdateWithoutMovieInput!
@@ -649,6 +573,22 @@ input ReviewUpdateWithWhereUniqueWithoutMovieInput {
 input ReviewUpdateManyWithWhereWithoutMovieInput {
   where: ReviewScalarWhereInput!
   data: ReviewUpdateManyMutationInput!
+}
+
+input ReviewScalarWhereInput {
+  AND: [ReviewScalarWhereInput!]
+  OR: [ReviewScalarWhereInput!]
+  NOT: [ReviewScalarWhereInput!]
+  id: IntFilter
+  movieId: IntFilter
+  userId: IntFilter
+  rating: IntFilter
+  comment: StringFilter
+}
+
+input ReviewUpdateManyMutationInput {
+  rating: IntFieldUpdateOperationsInput
+  comment: StringFieldUpdateOperationsInput
 }
 
 input ReviewCreateInput {
@@ -663,4 +603,24 @@ input ReviewUpdateInput {
   comment: StringFieldUpdateOperationsInput
   movie: MovieUpdateOneRequiredWithoutReviewsNestedInput
   user: UserUpdateOneRequiredWithoutReviewsNestedInput
+}
+
+input MovieUpdateOneRequiredWithoutReviewsNestedInput {
+  create: MovieCreateWithoutReviewsInput
+  connectOrCreate: MovieCreateOrConnectWithoutReviewsInput
+  upsert: MovieUpsertWithoutReviewsInput
+  connect: MovieWhereUniqueInput
+  update: MovieUpdateWithoutReviewsInput
+}
+
+input MovieUpsertWithoutReviewsInput {
+  update: MovieUpdateWithoutReviewsInput!
+  create: MovieCreateWithoutReviewsInput!
+}
+
+input MovieUpdateWithoutReviewsInput {
+  movieName: StringFieldUpdateOperationsInput
+  description: StringFieldUpdateOperationsInput
+  director: StringFieldUpdateOperationsInput
+  releaseDate: DateTimeFieldUpdateOperationsInput
 }

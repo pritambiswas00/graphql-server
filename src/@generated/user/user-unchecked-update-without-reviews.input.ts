@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { IntFieldUpdateOperationsInput } from '../prisma/int-field-update-operations.input';
 import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-operations.input';
 import { SessionUncheckedUpdateManyWithoutUserNestedInput } from '../session/session-unchecked-update-many-without-user-nested.input';
+import { MovieUncheckedUpdateManyWithoutUserNestedInput } from '../movie/movie-unchecked-update-many-without-user-nested.input';
 
 @InputType()
 export class UserUncheckedUpdateWithoutReviewsInput {
@@ -21,4 +22,7 @@ export class UserUncheckedUpdateWithoutReviewsInput {
 
     @Field(() => SessionUncheckedUpdateManyWithoutUserNestedInput, {nullable:true})
     session?: SessionUncheckedUpdateManyWithoutUserNestedInput;
+
+    @Field(() => MovieUncheckedUpdateManyWithoutUserNestedInput, {nullable:true})
+    movies?: MovieUncheckedUpdateManyWithoutUserNestedInput;
 }

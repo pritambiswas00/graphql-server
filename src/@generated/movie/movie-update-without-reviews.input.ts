@@ -2,6 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-operations.input';
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
+import { UserUpdateOneRequiredWithoutMoviesNestedInput } from '../user/user-update-one-required-without-movies-nested.input';
 
 @InputType()
 export class MovieUpdateWithoutReviewsInput {
@@ -17,4 +18,7 @@ export class MovieUpdateWithoutReviewsInput {
 
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     releaseDate?: DateTimeFieldUpdateOperationsInput;
+
+    @Field(() => UserUpdateOneRequiredWithoutMoviesNestedInput, {nullable:true})
+    user?: UserUpdateOneRequiredWithoutMoviesNestedInput;
 }

@@ -18,4 +18,7 @@ export class MovieMinAggregateInput {
 
     @Field(() => Boolean, {nullable:true})
     releaseDate?: true;
+
+    @Field(() => Boolean, {nullable:true})
+    userId?: true;
 }

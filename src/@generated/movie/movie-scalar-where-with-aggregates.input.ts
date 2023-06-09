@@ -30,4 +30,7 @@ export class MovieScalarWhereWithAggregatesInput {
 
     @Field(() => DateTimeWithAggregatesFilter, {nullable:true})
     releaseDate?: DateTimeWithAggregatesFilter;
+
+    @Field(() => IntWithAggregatesFilter, {nullable:true})
+    userId?: IntWithAggregatesFilter;
 }

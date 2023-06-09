@@ -20,7 +20,10 @@ export class MoviesService {
                 skip: skip,
                 take: limit,
                 orderBy: orderBy,
-                where: where
+                where: where,
+                include:{
+                     reviews: true
+                }
             });
         } catch (error) {
             throw new Error(error?.message);
@@ -34,6 +37,9 @@ export class MoviesService {
                 where: {
                     id: query.id,
                     movieName: query.movieName
+                },
+                include : {
+                     reviews : true
                 }
             })
         } catch (error) {

@@ -25,6 +25,9 @@ export class MovieGroupBy {
     @Field(() => Date, {nullable:false})
     releaseDate!: Date | string;
 
+    @Field(() => Int, {nullable:false})
+    userId!: number;
+
     @Field(() => MovieCountAggregate, {nullable:true})
     _count?: MovieCountAggregate;
 

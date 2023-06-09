@@ -8,6 +8,8 @@ import { ReviewCreateInput } from '~/@generated/review/review-create.input';
 import { ReviewUpdateInput } from '~/@generated/review/review-update.input';
 import { FindManyReviewArgs } from '~/@generated/review/find-many-review.args';
 import { ReviewWhereUniqueInput } from '~/@generated/review/review-where-unique.input';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '~/auth/Guards/jwt.guard';
 
 @Resolver(of => TReview)
 export class ReviewResolver {
@@ -15,6 +17,7 @@ export class ReviewResolver {
 
     ///Find review for a movie//
     @Query(returns => [TReview])
+    @UseGuards(JwtAuthGuard)
     public async findReviewsForMovie(@Args() movie: FindManyReviewArgs): Promise<Review[]> {
         try {
             return this.reviewService.findReviewsForMovie(movie);
@@ -25,6 +28,7 @@ export class ReviewResolver {
 
     //Create a Review
     @Mutation(returns => TReview)
+    @UseGuards(JwtAuthGuard)
     public async createReview(@Args('review') review: ReviewCreateInput): Promise<Review> {
         try {
             return this.reviewService.createReview(review)
@@ -36,6 +40,7 @@ export class ReviewResolver {
 
     //Edit Review
     @Mutation(returns => TReview)
+    @UseGuards(JwtAuthGuard)
     public async updateReview(@Args("seachInput") query: ReviewWhereUniqueInput, @Args("review") review: ReviewUpdateInput): Promise<Review> {
         try {
             return this.reviewService.updateReview(query, review);
@@ -47,6 +52,7 @@ export class ReviewResolver {
 
     //Delete Review
     @Mutation(returns => TReview)
+    @UseGuards(JwtAuthGuard)
     public async deleteReview(@Args("searchInput") query: ReviewWhereUniqueInput): Promise<Review> {
            try{
                return this.reviewService.deleteReview(query);

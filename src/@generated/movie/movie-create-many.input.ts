@@ -19,4 +19,7 @@ export class MovieCreateManyInput {
 
     @Field(() => Date, {nullable:false})
     releaseDate!: Date | string;
+
+    @Field(() => Int, {nullable:false})
+    userId!: number;
 }

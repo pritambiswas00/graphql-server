@@ -23,6 +23,9 @@ export class MovieUncheckedUpdateInput {
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     releaseDate?: DateTimeFieldUpdateOperationsInput;
 
+    @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
+    userId?: IntFieldUpdateOperationsInput;
+
     @Field(() => ReviewUncheckedUpdateManyWithoutMovieNestedInput, {nullable:true})
     reviews?: ReviewUncheckedUpdateManyWithoutMovieNestedInput;
 }

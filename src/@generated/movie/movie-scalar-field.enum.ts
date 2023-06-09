@@ -5,7 +5,8 @@ export enum MovieScalarFieldEnum {
     movieName = "movieName",
     description = "description",
     director = "director",
-    releaseDate = "releaseDate"
+    releaseDate = "releaseDate",
+    userId = "userId"
 }
 
 

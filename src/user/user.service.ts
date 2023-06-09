@@ -5,6 +5,10 @@ import { LoginUserInput } from '~/@generated/user/login.user';
 import { UserCreateInput } from '~/@generated/user/user-create.input';
 import { UserUpdateInput } from '~/@generated/user/user-update.input';
 import { DatabaseService } from '~/DataBase/database.service';
+import * as bcrypt from 'bcrypt';
+import { CurrentUser } from './user.decorator';
+
+
 
 @Injectable()
 export class UserService {
@@ -22,40 +26,43 @@ export class UserService {
                 }
             });
             if (newUser) return "new User Created";
-            else new Error("Movie Name already exists");
+            else new Error("User Name already exists");
         } catch (error) {
             throw new Error(error?.message)
         }
     }
 
-    public async login(user: LoginUserInput): Promise<string> {
+    public async findUserByEmailId(emailId: string): Promise<User | null> {
         try {
-            const isUserExist: User = await this.databaseService.user.findFirst({
+            const user = await this.databaseService.user.findFirst({
                 where: {
-                    email: user.email,
-                    password: user.password
+                    email: emailId
                 }
             });
-            if (isUserExist) return "User Logged In";
-            else new Error("User not found");
+            if (user) return user;
+            else return null;
         } catch (error) {
             throw new Error(error?.message)
         }
     }
 
-    public async updateUser(currentUser: FindUniqueUserOrThrowArgs, user: UserUpdateInput): Promise<User> {
+
+    public async changePassword(@CurrentUser() currentUser: User, password: string): Promise<string> {
         try {
-            return this.databaseService.user.update({
+            const newHashedPassword = await bcrypt.hash(password, 10);
+            await this.databaseService.user.update({
                 where: {
-                    id: currentUser.where.id,
-                    email: currentUser.where.email
+                    email: currentUser.email
                 },
-                data: user
+                data: {
+                    password: newHashedPassword
+                }
             });
+            return "Password Changed Successfully";
         } catch (error) {
-            throw new Error(error?.message)
+            throw new Error(error)
         }
     }
 
-    
+
 }

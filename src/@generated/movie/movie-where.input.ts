@@ -4,6 +4,7 @@ import { IntFilter } from '../prisma/int-filter.input';
 import { StringFilter } from '../prisma/string-filter.input';
 import { DateTimeFilter } from '../prisma/date-time-filter.input';
 import { ReviewListRelationFilter } from '../review/review-list-relation-filter.input';
+import { UserRelationFilter } from '../user/user-relation-filter.input';
 
 @InputType()
 export class MovieWhereInput {
@@ -32,6 +33,12 @@ export class MovieWhereInput {
     @Field(() => DateTimeFilter, {nullable:true})
     releaseDate?: DateTimeFilter;
 
+    @Field(() => IntFilter, {nullable:true})
+    userId?: IntFilter;
+
     @Field(() => ReviewListRelationFilter, {nullable:true})
     reviews?: ReviewListRelationFilter;
+
+    @Field(() => UserRelationFilter, {nullable:true})
+    user?: UserRelationFilter;
 }

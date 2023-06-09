@@ -6,4 +6,7 @@ export class MovieSumAggregateInput {
 
     @Field(() => Boolean, {nullable:true})
     id?: true;
+
+    @Field(() => Boolean, {nullable:true})
+    userId?: true;
 }

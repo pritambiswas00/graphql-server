@@ -28,10 +28,4 @@ export class FindManyReviewArgs {
 
     @Field(() => [ReviewScalarFieldEnum], {nullable:true})
     distinct?: Array<keyof typeof ReviewScalarFieldEnum>;
-
-    @Field(() => Int, {nullable:true, defaultValue: 1})
-    page?: number;
-
-    @Field(() => Int, {nullable:true, defaultValue: 10})
-    limit?: number;
 }

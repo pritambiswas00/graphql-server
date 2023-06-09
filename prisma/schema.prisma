@@ -23,6 +23,7 @@ model User {
   password  String
   reviews   Review[]
   session   Session[]
+  movies    Movie[]
 }
 
 model Movie {
@@ -32,6 +33,8 @@ model Movie {
   director    String
   releaseDate DateTime
   reviews     Review[]
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Review {

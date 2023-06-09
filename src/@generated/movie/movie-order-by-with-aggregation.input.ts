@@ -25,6 +25,9 @@ export class MovieOrderByWithAggregationInput {
     @Field(() => SortOrder, {nullable:true})
     releaseDate?: keyof typeof SortOrder;
 
+    @Field(() => SortOrder, {nullable:true})
+    userId?: keyof typeof SortOrder;
+
     @Field(() => MovieCountOrderByAggregateInput, {nullable:true})
     _count?: MovieCountOrderByAggregateInput;
 

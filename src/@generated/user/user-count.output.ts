@@ -10,4 +10,7 @@ export class UserCount {
 
     @Field(() => Int, {nullable:false})
     session?: number;
+
+    @Field(() => Int, {nullable:false})
+    movies?: number;
 }
