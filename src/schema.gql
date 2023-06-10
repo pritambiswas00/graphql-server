@@ -65,7 +65,7 @@ type User {
 type Query {
   movies(where: MovieWhereInput, orderBy: [MovieOrderByWithRelationInput!], cursor: MovieWhereUniqueInput, take: Int, skip: Int, distinct: [MovieScalarFieldEnum!], page: Int = 1, limit: Int = 10): [Movie!]!
   movie(query: MovieWhereUniqueInput!): Movie!
-  findReviewsForMovie(where: ReviewWhereInput, orderBy: [ReviewOrderByWithRelationInput!], cursor: ReviewWhereUniqueInput, take: Int, skip: Int, distinct: [ReviewScalarFieldEnum!], page: Int = 1, limit: Int = 10): [Review!]!
+  reviews(where: ReviewWhereInput, orderBy: [ReviewOrderByWithRelationInput!], cursor: ReviewWhereUniqueInput, take: Int, skip: Int, distinct: [ReviewScalarFieldEnum!], page: Int = 1, limit: Int = 10): [Review!]!
 }
 
 input MovieWhereInput {
@@ -303,7 +303,7 @@ type Mutation {
   login(user: LoginUserInput!): AccessToken!
   register(input: UserCreateInput!): AccessToken!
   changePassword(password: String!): String!
-  createMovie(movie: MovieCreateInput!): Movie!
+  createMovie(movie: MovieCreateWithoutUserInput!): Movie!
   updateMovie(searchInput: MovieWhereUniqueInput!, movie: MovieUncheckedUpdateWithoutUserInput!): Movie!
   deleteMovie(query: MovieWhereUniqueInput!): Movie!
   createReview(review: ReviewCreateInput!): Review!
@@ -511,14 +511,6 @@ input MovieCreateManyUserInput {
   description: String!
   director: String!
   releaseDate: DateTime!
-}
-
-input MovieCreateInput {
-  movieName: String!
-  description: String!
-  director: String!
-  releaseDate: DateTime!
-  reviews: ReviewCreateNestedManyWithoutMovieInput
 }
 
 input MovieUncheckedUpdateWithoutUserInput {

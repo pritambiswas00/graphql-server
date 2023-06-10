@@ -1,13 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { Review, User } from "@prisma/client";
-import { MovieOrderByWithRelationInput } from "~/@generated/movie/movie-order-by-with-relation.input";
-import { DeleteOneReviewArgs } from "~/@generated/review/delete-one-review.args";
+import { GraphQLError } from "graphql";
 import { FindManyReviewArgs } from "~/@generated/review/find-many-review.args";
-import { FindUniqueReviewOrThrowArgs } from "~/@generated/review/find-unique-review-or-throw.args";
 import { ReviewCreateInput } from "~/@generated/review/review-create.input";
-import { ReviewUpdateWithoutMovieInput } from "~/@generated/review/review-update-without-movie.input";
 import { ReviewUpdateWithoutUserInput } from "~/@generated/review/review-update-without-user.input";
-import { ReviewUpdateInput } from "~/@generated/review/review-update.input";
 import { ReviewWhereUniqueInput } from "~/@generated/review/review-where-unique.input";
 import { DatabaseService } from "~/DataBase/database.service";
 
@@ -17,7 +13,7 @@ export class ReviewService {
      constructor(private readonly databaseService: DatabaseService) { }
 
      //Find Reviews for a movie///
-     public async findReviewsForMovie(review: FindManyReviewArgs, user:User): Promise<Review[]> {
+     public async reviews(review: FindManyReviewArgs, user:User): Promise<Review[]> {
           try {
                const { page, limit, orderBy, where } = review;
                const skip = (page - 1) * limit;
@@ -33,7 +29,7 @@ export class ReviewService {
                });
                return reviews.sort((a,b)=> a.userId===user.id?-1:1);
           } catch (error) {
-               throw new Error(error?.message)
+               throw new GraphQLError(error?.message)
           }
      }
 
@@ -57,7 +53,7 @@ export class ReviewService {
                      }
                })
           } catch (error) {
-               throw new Error(error?.message)
+               throw new GraphQLError(error?.message)
           }
      }
 
@@ -65,11 +61,9 @@ export class ReviewService {
      public async updateReview(user:User,query: ReviewWhereUniqueInput, review: ReviewUpdateWithoutUserInput): Promise<Review> {
           try {
                const isReviewAllowed = await this.databaseService.review.findUnique({
-                        where : {
-                          id : query.id,
-                        }
+                        where : query
                });
-               if(isReviewAllowed.userId !== user.id) throw new Error("Not Authorized to edit this review.");
+               if(isReviewAllowed.userId !== user.id) throw new GraphQLError("Not Authorized to edit this review.");
                return this.databaseService.review.update({
                     where: query,
                     data: review,
@@ -79,7 +73,7 @@ export class ReviewService {
                     }
                })
           } catch (error) {
-               throw new Error(error?.message)
+               throw new GraphQLError(error?.message)
           }
      }
 
@@ -90,13 +84,13 @@ export class ReviewService {
                const review = await this.databaseService.review.findUnique({
                     where: query
                });
-               if(!review) throw new Error("Review not found.");
-               if(review.userId !== user.id) throw new Error("Not Authorized to delete this review.");
+               if(!review) throw new GraphQLError("Review not found.");
+               if(review.userId !== user.id) throw new GraphQLError("Not Authorized to delete this review.");
                return this.databaseService.review.delete({
                     where: query
                })
           } catch (error) {
-               throw new Error(error);
+               throw new GraphQLError(error);
           }
      }
 }

@@ -10,6 +10,7 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '~/auth/Guards/jwt.guard';
 import { CurrentUser } from '~/user/user.decorator';
 import { MovieUncheckedUpdateWithoutUserInput } from '~/@generated/movie/movie-unchecked-update-without-user.input';
+import { MovieCreateWithoutUserInput } from '~/@generated/movie/movie-create-without-user.input';
 
 
 @Resolver(of => TMovie)
@@ -49,7 +50,7 @@ export class MoviesResolver {
     //Create new Movie
     @Mutation(returns => TMovie)
     @UseGuards(JwtAuthGuard)
-    public async createMovie(@CurrentUser() user:User ,@Args("movie") movie: MovieCreateInput): Promise<Movie> {
+    public async createMovie(@CurrentUser() user:User ,@Args("movie") movie: MovieCreateWithoutUserInput): Promise<Movie> {
         try {
             return this.movieService.createMovie(user,movie);
         } catch (error) {

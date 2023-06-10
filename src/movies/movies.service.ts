@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Movie, User } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import { CreateOneMovieArgs } from '~/@generated/movie/create-one-movie.args';
 import { FindManyMovieArgs } from '~/@generated/movie/find-many-movie.args';
-import { MovieCreateInput } from '~/@generated/movie/movie-create.input';
+import { MovieCreateWithoutUserInput } from '~/@generated/movie/movie-create-without-user.input';
 import { MovieUncheckedUpdateWithoutUserInput } from '~/@generated/movie/movie-unchecked-update-without-user.input';
-import { MovieUpdateInput } from '~/@generated/movie/movie-update.input';
 import { MovieWhereUniqueInput } from '~/@generated/movie/movie-where-unique.input';
 import { DatabaseService } from '~/DataBase/database.service';
 
@@ -28,7 +26,7 @@ export class MoviesService {
                 }
             });
         } catch (error) {
-            throw new Error(error?.message);
+            throw new GraphQLError(error?.message);
         }
     }
 
@@ -50,14 +48,14 @@ export class MoviesService {
         }
     }
 
-    public async createMovie(currrentUser: User, movie: MovieCreateInput): Promise<Movie> {
+    public async createMovie(currrentUser: User, movie: MovieCreateWithoutUserInput): Promise<Movie> {
         try {
             const isMovieExist = await this.dataBaseService.movie.findFirst({
                 where: {
                     movieName: movie.movieName.toLowerCase()
                 }
             });
-            if (isMovieExist) throw new Error("Movie Name already exists");
+            if (isMovieExist) throw new GraphQLError("Movie Name already exists");
             const newMovie = await this.dataBaseService.movie.create({
                 data: {
                     movieName: movie.movieName.toLowerCase(),
@@ -73,7 +71,7 @@ export class MoviesService {
             });
             return newMovie;
         } catch (error) {
-            throw new Error(error);
+            throw new GraphQLError(error);
         }
     }
 
@@ -108,7 +106,7 @@ export class MoviesService {
             const isMovieExist = await this.dataBaseService.movie.findFirst({
                 where: searchInput
             });
-            if (!isMovieExist) throw new Error("Movie not found.");
+            if (!isMovieExist) throw new GraphQLError("Movie not found.");
             if (isMovieExist.userId !== user.id) throw new Error("Not Authorized to delete this Movie.");
             return this.dataBaseService.movie.delete({
                 where: searchInput,
@@ -119,7 +117,7 @@ export class MoviesService {
 
             });
         } catch (error) {
-            throw new Error('Database error occurred: ' + error.message);
+            throw new GraphQLError('Database error occurred: ' + error.message);
         }
     }
 

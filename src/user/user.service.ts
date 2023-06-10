@@ -7,6 +7,7 @@ import { UserUpdateInput } from '~/@generated/user/user-update.input';
 import { DatabaseService } from '~/DataBase/database.service';
 import * as bcrypt from 'bcrypt';
 import { CurrentUser } from './user.decorator';
+import { GraphQLError } from 'graphql';
 
 
 
@@ -26,9 +27,9 @@ export class UserService {
                 }
             });
             if (newUser) return "new User Created";
-            else new Error("User Name already exists");
+            else new GraphQLError("User Name already exists");
         } catch (error) {
-            throw new Error(error?.message)
+            throw new GraphQLError(error?.message)
         }
     }
 
@@ -42,7 +43,7 @@ export class UserService {
             if (user) return user;
             else return null;
         } catch (error) {
-            throw new Error(error?.message)
+            throw new GraphQLError(error?.message)
         }
     }
 
@@ -60,7 +61,7 @@ export class UserService {
             });
             return "Password Changed Successfully";
         } catch (error) {
-            throw new Error(error)
+            throw new GraphQLError(error)
         }
     }
 
