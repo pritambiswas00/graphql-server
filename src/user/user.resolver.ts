@@ -17,7 +17,6 @@ export class UserResolver {
     @UseGuards(JwtAuthGuard)
     public async changePassword(@CurrentUser() currentUser:User, @Args("password") newPassword: string): Promise<string> {
         try {
-            console.log(currentUser, "Current User")
             return this.userService.changePassword(currentUser, newPassword);
         } catch (error) {
             throw new GraphQLError(error?.message)

@@ -28,4 +28,10 @@ export class FindManyMovieArgs {
 
     @Field(() => [MovieScalarFieldEnum], {nullable:true})
     distinct?: Array<keyof typeof MovieScalarFieldEnum>;
+
+    @Field(() => Int, {nullable:true, defaultValue: 1})
+    page?: number;
+
+    @Field(() => Int, {nullable:true, defaultValue: 10})
+    limit?: number;
 }

@@ -21,6 +21,6 @@ export class MovieCreateInput {
     @Field(() => ReviewCreateNestedManyWithoutMovieInput, {nullable:true})
     reviews?: ReviewCreateNestedManyWithoutMovieInput;
 
-    @Field(() => UserCreateNestedOneWithoutMoviesInput, {nullable:false})
-    user!: UserCreateNestedOneWithoutMoviesInput;
+    // @Field(() => UserCreateNestedOneWithoutMoviesInput, {nullable:false})
+    // user!: UserCreateNestedOneWithoutMoviesInput;
 }

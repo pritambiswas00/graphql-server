@@ -1,14 +1,16 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { MoviesService } from './movies.service';
-import { Movie } from '@prisma/client';
+import { Movie, User } from '@prisma/client';
 import { Movie as TMovie } from '~/@generated/movie/movie.model';
 import { MovieWhereUniqueInput } from '~/@generated/movie/movie-where-unique.input';
 import { GraphQLError } from 'graphql';
 import { FindManyMovieArgs } from '~/@generated/movie/find-many-movie.args';
-import { MovieUpdateInput } from '~/@generated/movie/movie-update.input';
 import { MovieCreateInput } from '~/@generated/movie/movie-create.input';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '~/auth/Guards/jwt.guard';
+import { CurrentUser } from '~/user/user.decorator';
+import { MovieUncheckedUpdateWithoutUserInput } from '~/@generated/movie/movie-unchecked-update-without-user.input';
+
 
 @Resolver(of => TMovie)
 export class MoviesResolver {
@@ -19,10 +21,11 @@ export class MoviesResolver {
     @Query(returns => [TMovie])
     @UseGuards(JwtAuthGuard)
     public async movies(
-        @Args() searchQuery: FindManyMovieArgs
+        @Args() searchQuery: FindManyMovieArgs,
+        @CurrentUser() currentUser:User
     ): Promise<Movie[]> {
         try {
-            const movies = await this.movieService.findAllMovies(searchQuery);
+            const movies = await this.movieService.findAllMovies(currentUser,searchQuery);
             return movies;
         } catch (error) {
             throw new GraphQLError(error?.message);
@@ -37,20 +40,19 @@ export class MoviesResolver {
             return this.movieService.findMovie(query);
         } catch (error) {
             if (error.code === "P2002") {
-                throw new Error(`Movie with name ${query.movieName} already exists.`);
+                throw new GraphQLError(`Movie with name ${query.movieName} already exists.`);
             }
-            throw new Error("Failed to create a new movie.");
+            throw new GraphQLError("Failed to create a new movie.");
         }
     }
 
     //Create new Movie
     @Mutation(returns => TMovie)
     @UseGuards(JwtAuthGuard)
-    public async createMovie(@Args("movie") movie: MovieCreateInput): Promise<Movie> {
+    public async createMovie(@CurrentUser() user:User ,@Args("movie") movie: MovieCreateInput): Promise<Movie> {
         try {
-            return this.movieService.createMovie(movie);
+            return this.movieService.createMovie(user,movie);
         } catch (error) {
-            console.log(error)
             throw new GraphQLError(error?.message);
         }
     }
@@ -60,10 +62,11 @@ export class MoviesResolver {
     @UseGuards(JwtAuthGuard)
     public async updateMovie(
         @Args("searchInput") searchInput: MovieWhereUniqueInput,
-        @Args('movie') movie: MovieUpdateInput,
+        @Args('movie') movie: MovieUncheckedUpdateWithoutUserInput,
+        @CurrentUser() currentUser: User
     ): Promise<Movie> {
         try {
-            return this.movieService.updateMovie(searchInput, movie);
+            return this.movieService.updateMovie(currentUser, searchInput, movie);
         } catch (error) {
             throw new GraphQLError(error?.message);
         }
@@ -72,9 +75,12 @@ export class MoviesResolver {
     //Delete Movie
     @Mutation(returns => TMovie)
     @UseGuards(JwtAuthGuard)
-    public async deleteMovie(@Args("query") query: MovieWhereUniqueInput): Promise<Movie> {
+    public async deleteMovie(
+        @Args("query") query: MovieWhereUniqueInput,
+        @CurrentUser() currentUser:User
+        ): Promise<Movie> {
         try {
-            return this.movieService.deleteMovie(query);
+            return this.movieService.deleteMovie(currentUser,query);
         } catch (error) {
             throw new GraphQLError(error?.message);
         }
