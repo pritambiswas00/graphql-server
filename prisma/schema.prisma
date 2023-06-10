@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator nestgraphql {
+     provider = "node node_modules/prisma-nestjs-graphql"
+     output = "../src/@generated"
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  userName  String
+  email     String   @unique
+  password  String
+  reviews   Review[]
+  session   Session[]
+  movies    Movie[]
+}
+
+model Movie {
+  id          Int       @id @default(autoincrement())
+  movieName   String    @unique
+  description String
+  director    String
+  releaseDate DateTime
+  reviews     Review[]
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  movieId   Int
+  userId    Int
+  rating    Int
+  comment   String
+
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+    id                 Int     @id @default(autoincrement())
+    sessionToken       String  @unique
+    userId             Int
+    expires            DateTime
+    user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
